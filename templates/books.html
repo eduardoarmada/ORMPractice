@@ -2,12 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Adding books</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style1.css')}}">
 </head>
 <body>
-    <form action="/books" method="POST">
-        <label for="books">Book's title</label>
-        <input type="text" name="books" id="books">
+    <h1>{{message}}</h1>
+    <div class="form_container">
+    <form class="data-form" action="/add_book" method="POST">
+        <label for="book">Book's name</label>
+            <input type="text" name="book" id="book">
+        <label for="author">Author's birth date</label>
+            <input type="text" name="author" id="author">
+        <label for="ISBN">Author's death date</label>
+            <input type="text" name="ISBN" id="ISBN">
+        <input type="submit" value="Add book">
     </form>
+    </div>
 </body>
 </html>

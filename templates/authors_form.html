@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Adding authors</title>
-    <link rel="stylesheet" type="text/css" href="url_for('static', 'style1.css')">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style1.css')}}">
 </head>
 <body>
-    <h1>{{message}}</h1>
+    <h1 class="message">{{message}}</h1>
     <div class="form_container">
-    <form action="/authors" method="POST">
+    <form class="data-form" action="/add_author" method="POST">
         <label for="author">Author's name</label>
             <input type="text" name="author" id="author">
         <label for="birth">Author's birth date</label>

@@ -1,22 +1,17 @@
-from flask import Flask, request, render_template, url_for
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from flask import Flask, request, render_template
 from data_models import Author, Book
+from base import db
 
+
+import os
+
+file_path = os.path.abspath(os.getcwd())+"/data/library.db"
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/library.db'
-
-#Base = declarative_base()
-#engine = create_engine("sqlite:///data/library.db")
-#Session = sessionmaker(bind=engine)
-#session = Session()
-
-db = SQLAlchemy()
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+file_path
 db.init_app(app)
-
-#Base.metadata.create_all(engine)
+with app.app_context():
+    db.metadata.create_all(bind=db.engine)
 
 
 @app.route("/add_author", methods=['GET', 'POST'])
@@ -26,11 +21,10 @@ def add_author():
         return render_template("authors_form.html", message=message)
 
     else:
-        authors_data = request.form
         author = Author(
-                        author_name=authors_data.get("name"),
-                        author_birth_date=authors_data.get("author_birth_date"),
-                        author_death_date=authors_data.get("author_death_date")
+                        author_name=request.form.get("author", 'Default Author'),
+                        author_birth_date=request.form.get("birth", "Default birth date"),
+                        author_death_date=request.form.get("death", "Default death date")
                         )
 
         db.session.add(author)
@@ -39,15 +33,29 @@ def add_author():
         return render_template("authors_form.html", message=message)
 
 
-
 @app.route("/add_book", methods=["GET", "POST"])
 def add_book():
     if request.method == 'GET':
-        pass
+        message = "Enter book's data"
+        return render_template("books.html", message=message)
+
     else:
-        pass
+        book = Book(
+            book_name=request.form.get("book", 'Default Book'),
+            book_author=request.form.get("author", 'Default Author'),
+            book_ISBN=request.form.get("ISBN", 1)
+        )
+
+        db.session.add(book)
+        db.session.commit()
+        message = "Book added, Want to add more?"
+        return render_template("books.html", message=message)
 
 
-@app.route("/home", methods=["GET"])
+@app.route("/", methods=["GET"])
 def home():
     return render_template("home.html")
+
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5001)

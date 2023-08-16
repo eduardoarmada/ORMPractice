@@ -1,26 +1,21 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, create_engine
-from sqlalchemy.orm import declarative_base, mapped_column
-
-Base = declarative_base()
-engine = create_engine("sqlite:///data/library.db")
+from sqlalchemy.orm import mapped_column
+from base import db
 
 
-class Author(Base):
+class Author(db.Model):
     __tablename__ = "authors"
 
-    author_id = Column(Integer, primary_key=True)
-    author_name = Column(String)
-    author_birth_date = Column(String)
-    author_death_date = Column(String)
+    author_id = db.Column(db.Integer, primary_key=True)
+    author_name = db.Column(db.String)
+    author_birth_date = db.Column(db.String)
+    author_death_date = db.Column(db.String)
 
 
-class Book(Base):
+class Book(db.Model):
     __tablename__ = "books"
 
-    book_id = Column(Integer, primary_key=True)
-    book_isbn = Column(Integer)
-    book_name = Column(String)
+    book_id = db.Column(db.Integer, primary_key=True)
+    book_isbn = db.Column(db.Integer)
+    book_name = db.Column(db.String)
     book_author = mapped_column(ForeignKey('authors.author_id'))
-
-
-#Base.metadata.create_all(engine)
