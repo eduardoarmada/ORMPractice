@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 from data_models import Author, Book
 from base import db
 import os
@@ -54,6 +54,11 @@ def add_book():
 
 @app.route("/", methods=["GET"])
 def home():
+    if request.args.get("search") is not None:
+        search_title = "%" + request.args.get("search") + "%"
+        books = [book.book_name for book in
+                 Book.query.filter(Book.book_name.like(search_title)).all()]
+        return render_template("home.html", books=books)
     books = [book.book_name for book in Book.query.all()]
     return render_template("home.html", books=books)
 
@@ -62,6 +67,14 @@ def home():
 def book_info(book):
     book_data = Book.query.filter_by(book_name=book).all()
     return render_template("book.html", book_data=book_data[0])
+
+
+@app.route("/<string:book>/delete", methods=["GET"])
+def book_delete(book):
+    book_data = Book.query.filter_by(book_name=book).one()
+    db.session.delete(book_data)
+    db.session.commit()
+    return redirect("/")
 
 
 if __name__ == "__main__":

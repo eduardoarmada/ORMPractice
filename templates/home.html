@@ -10,6 +10,11 @@
     {% for book_name in books %}
         <a class="book-link" href="/{{book_name}}">{{book_name}}</a>
     {% endfor %}
+        <form action="/" method="GET">
+            <label for="search">Search</label>
+            <input type="text" id="search" name="search">
+            <input type="submit" Value="Search">
+        </form>
     <hr>
     <a href="/add_author">Add an Author!</a>
     <hr>
