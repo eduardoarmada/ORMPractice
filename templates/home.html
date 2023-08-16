@@ -6,8 +6,13 @@
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style1.css')}}">
 </head>
 <body>
-    <h1>Welcome to the library!</h1>
-
-
+    <h1 class="message">Welcome to the library!</h1>
+    {% for book_name in books %}
+        <a class="book-link" href="/{{book_name}}">{{book_name}}</a>
+    {% endfor %}
+    <hr>
+    <a href="/add_author">Add an Author!</a>
+    <hr>
+    <a href="/add_book">Add a Book!</a>
 </body>
 </html>

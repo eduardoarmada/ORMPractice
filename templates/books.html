@@ -6,17 +6,22 @@
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style1.css')}}">
 </head>
 <body>
-    <h1>{{message}}</h1>
+    <h1 class="message" >{{message}}</h1>
     <div class="form_container">
     <form class="data-form" action="/add_book" method="POST">
         <label for="book">Book's name</label>
             <input type="text" name="book" id="book">
-        <label for="author">Author's birth date</label>
-            <input type="text" name="author" id="author">
-        <label for="ISBN">Author's death date</label>
+        <label for="author">Author's name</label>
+            <select id="author" name="author">
+                {% for author_name in authors %}
+                <option value={{author_name}}>{{author_name}}</option>
+                {% endfor %}
+            </select>
+        <label for="ISBN">ISBN</label>
             <input type="text" name="ISBN" id="ISBN">
         <input type="submit" value="Add book">
     </form>
     </div>
+    <a href="/">Back to the library!</a>
 </body>
 </html>

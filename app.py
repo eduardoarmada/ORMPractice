@@ -1,14 +1,13 @@
 from flask import Flask, request, render_template
 from data_models import Author, Book
 from base import db
-
-
 import os
 
+# Setting up flask-sqlalchemy with the database
 file_path = os.path.abspath(os.getcwd())+"/data/library.db"
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+file_path
+
 db.init_app(app)
 with app.app_context():
     db.metadata.create_all(bind=db.engine)
@@ -37,13 +36,14 @@ def add_author():
 def add_book():
     if request.method == 'GET':
         message = "Enter book's data"
-        return render_template("books.html", message=message)
+        authors = [author.author_name for author in Author.query.all()]
+        return render_template("books.html", message=message, authors=authors)
 
     else:
         book = Book(
             book_name=request.form.get("book", 'Default Book'),
             book_author=request.form.get("author", 'Default Author'),
-            book_ISBN=request.form.get("ISBN", 1)
+            book_isbn=request.form.get("ISBN", 1)
         )
 
         db.session.add(book)
@@ -54,7 +54,14 @@ def add_book():
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("home.html")
+    books = [book.book_name for book in Book.query.all()]
+    return render_template("home.html", books=books)
+
+
+@app.route("/<string:book>", methods=["GET"])
+def book_info(book):
+    book_data = Book.query.filter_by(book_name=book).all()
+    return render_template("book.html", book_data=book_data[0])
 
 
 if __name__ == "__main__":
